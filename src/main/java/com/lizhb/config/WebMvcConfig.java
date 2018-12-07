@@ -38,6 +38,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
     public SpringResourceTemplateResolver templateResolver(){
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(this.applicationContext);
+        templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;
     }
 
@@ -77,5 +78,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        super.addResourceHandlers(registry);
     }
 }

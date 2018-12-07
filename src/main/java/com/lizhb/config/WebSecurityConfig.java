@@ -1,6 +1,8 @@
 package com.lizhb.config;
 
 import com.lizhb.security.AuthProvider;
+import com.lizhb.security.LoginAuthFailHandler;
+import com.lizhb.security.LoginUrlEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,12 +39,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 //用户权限页面
                 .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
-
                 .antMatchers("/api/user/**").hasAnyRole("ADMIN", "USER")
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")//配置角色登录处理入口
-                .and();
+                .failureHandler(authFailHandler()) // 登录失败处理器
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/logout/page")
+                .deleteCookies("JSESSIONID")  //登出后删除cookie
+                .invalidateHttpSession(true)  //session失效
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(urlEntryPoint())
+                .accessDeniedPage("/403");
         //防御策略，为方便开发，暂时关闭
         http.csrf().disable();
         //同源策略，huiadmin使用iframe
@@ -62,5 +73,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthProvider authProvider(){
         return new AuthProvider();
+    }
+
+    @Bean
+    public LoginUrlEntryPoint urlEntryPoint(){
+        return new LoginUrlEntryPoint("/user/login");
+    }
+
+    @Bean
+    public LoginAuthFailHandler authFailHandler(){
+        return new LoginAuthFailHandler(urlEntryPoint());
     }
 }

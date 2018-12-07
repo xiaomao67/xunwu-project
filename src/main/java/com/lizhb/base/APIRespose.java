@@ -18,6 +18,11 @@ public class APIRespose {
         this.code = code;
         this.message = message;
     }
+    public APIRespose(int code, String message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
     public APIRespose(int code, String message, Object data, boolean more) {
         this.code = code;
         this.message = message;
@@ -59,6 +64,14 @@ public class APIRespose {
 
     public static APIRespose ofMessage(int status, String message) {
         return new APIRespose(status, message, null, false);
+    }
+
+    public static APIRespose ofSuccess(Object data) {
+        return new APIRespose(Status.SUCCESS.getCode(), Status.SUCCESS.getStandardMsg(), data);
+    }
+
+    public static APIRespose ofStatus(Status status) {
+        return new APIRespose(status.getCode(), status.getStandardMsg(), null);
     }
 
     public enum Status {

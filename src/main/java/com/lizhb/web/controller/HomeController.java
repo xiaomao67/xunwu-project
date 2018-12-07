@@ -16,7 +16,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("name", "lizhb");
+//        model.addAttribute("name", "lizhb");
         return "index";
     }
 
@@ -46,7 +46,7 @@ public class HomeController {
         return "500";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/logout/page")
     public String logout(){
         return "logout";
     }
